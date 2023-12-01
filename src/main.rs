@@ -40,9 +40,38 @@ macro_rules! generate_solutions_for_days {
             match $day_ {
                 $(
                     Day::[<Day $day>] => {
+                        let part_1_input = $input
+                            .as_ref()
+                            .map(|input| std::fs::read(input).expect("`--input` should point to an existing file"))
+                            .unwrap_or_else(||
+                                    include_bytes!(
+                                        concat!(
+                                            "../input/day",
+                                            $day,
+                                            "_part",
+                                            1,
+                                            ".txt",
+                                        )
+                                    ).to_vec()
+                                );
+
+                        let part_2_input = $input
+                            .map(|input| std::fs::read(input).expect("`--input` should point to an existing file"))
+                            .unwrap_or_else(||
+                                    include_bytes!(
+                                        concat!(
+                                            "../input/day",
+                                            $day,
+                                            "_part",
+                                            2,
+                                            ".txt",
+                                        )
+                                    ).to_vec()
+                                );
+
                         let res = match $part {
-                            Part::Part1 => [<day_ $day>]::part_1::solution($input.as_slice()),
-                            Part::Part2 => [<day_ $day>]::part_2::solution($input.as_slice()),
+                            Part::Part1 => [<day_ $day>]::part_1::solution(part_1_input.as_slice()),
+                            Part::Part2 => [<day_ $day>]::part_2::solution(part_2_input.as_slice()),
                         };
 
                         println!("The answer is: {res}");
@@ -55,10 +84,6 @@ macro_rules! generate_solutions_for_days {
 
 fn main() {
     let Args { day, part, input } = Args::parse();
-
-    let input = input
-        .map(|input| std::fs::read(input).expect("`--input` should point to an existing file"))
-        .unwrap_or_else(|| include_bytes!("../input/day1_part1.txt").to_vec());
 
     generate_solutions_for_days!(day, part, input, [1]);
 }
