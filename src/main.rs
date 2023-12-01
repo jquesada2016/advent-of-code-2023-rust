@@ -29,6 +29,30 @@ enum Part {
     Part2,
 }
 
+macro_rules! generate_solutions_for_days {
+    (
+        $day_:expr,
+        $part:expr,
+        $input:expr,
+        [$($day:literal),* $(,)?] $(,)?
+    ) => {
+        paste::paste! {
+            match $day_ {
+                $(
+                    Day::[<Day $day>] => {
+                        let res = match $part {
+                            Part::Part1 => [<day_ $day>]::part_1::solution($input.as_slice()),
+                            Part::Part2 => [<day_ $day>]::part_2::solution($input.as_slice()),
+                        };
+
+                        println!("The answer is: {res}");
+                    }
+                )*
+            }
+        }
+    };
+}
+
 fn main() {
     let Args { day, part, input } = Args::parse();
 
@@ -36,14 +60,5 @@ fn main() {
         .map(|input| std::fs::read(input).expect("`--input` should point to an existing file"))
         .unwrap_or_else(|| include_bytes!("../input/day1_part1.txt").to_vec());
 
-    match day {
-        Day::Day1 => match part {
-            Part::Part1 => {
-                let res = day_1::part_1::solution(input.as_slice());
-
-                println!("The answer is: {res}");
-            }
-            Part::Part2 => todo!(),
-        },
-    }
+    generate_solutions_for_days!(day, part, input, [1]);
 }
