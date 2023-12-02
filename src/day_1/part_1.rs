@@ -1,12 +1,12 @@
-pub fn solution(input: &[u8]) -> usize {
+pub fn solution(input: &str) -> usize {
     // We first split by lines
-    input.split(|b| *b == b'\n').fold(0, |acc, curr| {
+    input.lines().fold(0, |acc, curr| {
         let mut numbers = curr
-            .iter()
+            .chars()
             // We remove all letters, since we don't care about them
-            .filter(|b| b.is_ascii_digit())
+            .filter(|c| c.is_ascii_digit())
             // convert ascii digit to u8
-            .map(|b| *b - b'0');
+            .map(|c| c as u8 - b'0');
 
         // Get the first and last numbers we care about
 
